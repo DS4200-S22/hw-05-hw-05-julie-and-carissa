@@ -4,5 +4,5 @@ body {
 }
 
 .selected {
-  outline: black;
+  stroke: black;
 }
