@@ -74,7 +74,7 @@ d3.csv("data/iris.csv").then((data) => {
         .text(xKey1)
       );
 
-    // Finx max y 
+    // Find max y 
     let maxY1 = d3.max(data, (d) => { return d[yKey1]; });
 
     // Create Y scale
@@ -109,11 +109,13 @@ d3.csv("data/iris.csv").then((data) => {
 
 
     //TODO: Define a brush (call it brush1)
-    // let brush1 = d3.brush().extent([[0, 0], [width, height]]);
-    let brush1 = d3.brush()
-    brush1.on("start brush end", (event) => {
+    let brush1 = d3.brush().extent([[0, 0], [width, height]]);
+    // let brush1 = d3.brush()
+    brush1.on("start brush", (event) => {
       updateChart1(event);
     })
+    brush1.on("end", clear);
+    
 
     // const select = d3.select("#vis-holder")
     // const call = call(brush1.extent([[0, 0], [width, height]]))
@@ -288,11 +290,9 @@ d3.csv("data/iris.csv").then((data) => {
 
   // Call when Scatterplot1 is brushed 
   function updateChart1(brushEvent) {
-    console.log('hello');
 
     //TODO: Find coordinates of brushed region 
     extent = brushEvent.selection;
-    console.log(extent);
 
     // myCircles1.forEach((myCircle) => {
     //   //TODO: Give bold outline to all points within the brush region in Scatterplot1
@@ -301,7 +301,7 @@ d3.csv("data/iris.csv").then((data) => {
     //   myCircle.classed("selected", (d) => { return isBrushed(extent, myCircle.attr("cx"), myCircle.attr("cy")) })
     // })
 
-    myCircles1.classed("selected", (d) => { return isBrushed(extent, x1(d.Petal_Length), y1(d.Sepal_Length)) })
+    myCircles1.classed("selected", (d) => { return isBrushed(extent, d.Petal_Length, d.Sepal_Length) })
 
     //TODO: Give bold outline to all points in Scatterplot2 corresponding to points within the brush region in Scatterplot1
 
