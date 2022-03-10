@@ -20,7 +20,8 @@ const svg2 = d3.select("#scatterplot-2")
   .attr("width", width - margin.left - margin.right)
   .attr("height", height - margin.top - margin.bottom)
   .attr("viewBox", [0, 0, width, height]);
-//TODO: Initialize brush for Scatterplot2 and points. We will need these to be global.
+
+  //TODO: Initialize brush for Scatterplot2 and points. We will need these to be global.
 let brush2;
 let myCircles2;
 
@@ -109,20 +110,10 @@ d3.csv("data/iris.csv").then((data) => {
 
 
     //TODO: Define a brush (call it brush1)
-    let brush1 = d3.brush().extent([[0, 0], [width, height]]);
-    // let brush1 = d3.brush()
-    brush1.on("start brush", (event) => {
-      updateChart1(event);
-    })
+    let brush1 = d3.brush()
+      .extent([[0, 0], [width, height]])
+      .on("start brush", updateChart1);
     brush1.on("end", clear);
-    
-
-    // const select = d3.select("#vis-holder")
-    // const call = call(brush1.extent([[0, 0], [width, height]]))
-    // const on = on("brush end", (event) => {
-    //   console.log('hello2')
-    //   updateChart1(event);
-    // })
 
     // select().call().on()
 
@@ -205,9 +196,11 @@ d3.csv("data/iris.csv").then((data) => {
   //TODO: Barchart with counts of different species
   {
 
-    let barData = [{ species: 'setosa', count: 50 },
-    { species: 'versicolor', count: 50 },
-    { species: 'virginica', count: 50 }];
+    let barData = [
+      { species: 'setosa', count: 50 },
+      { species: 'versicolor', count: 50 },
+      { species: 'virginica', count: 50 }
+    ];
 
     let xKey3 = "species";
     let yKey3 = "count";
@@ -215,21 +208,20 @@ d3.csv("data/iris.csv").then((data) => {
     // Find max x
     let maxX3 = d3.max(barData, (d) => { return d.length; });
 
-    // Create X scale
     let x3 = d3.scaleBand()
-      .domain(barData.map((d) => d[xKey3]))
-      // .domain(d3.range(barData.length))
-      .range([margin.left, width - margin.right])
-      .padding(0.1);
+              .domain(d3.range(barData.length))
+              .range([margin.left, width - margin.right])
+              .padding(0.1); 
 
     // Add x axis 
     svg3.append("g")
       .attr("transform", `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x3))
+      .call(d3.axisBottom(x3)
+        .tickFormat(i => barData[i][xKey3]))
       .attr("font-size", '20px')
       .call((g) => g.append("text")
-        // .attr("x", width - margin.right)
-        // .attr("y", margin.bottom - 4)
+        .attr("x", width - margin.right)
+        .attr("y", margin.bottom - 4)
         .attr("fill", "black")
         .attr("text-anchor", "end")
         .text(xKey3)
@@ -256,19 +248,17 @@ d3.csv("data/iris.csv").then((data) => {
         .text(yKey3)
       );
 
-    // Add points
-    svg3.selectAll(".bar")
-      .data(barData)
-      .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", (d, i) => x3(d[xKey3]) + 63)
-      .attr("y", (d) => y3(d[yKey3]))
-      .attr("height", (d) => (height - margin.bottom) - y3(d[yKey3]))
-      // .attr("height", (d) => (y3(d.yKey3)))
-      .attr("width", x3.bandwidth() / 3)
-      .style("fill", (d) => color(d[xKey3]))
-      .style("opacity", 0.5);
+    svg3.selectAll(".bar") 
+        .data(barData) 
+        .enter()  // give data to the bars
+        .append("rect") 
+          .attr("class", "bar") 
+          .attr("x", (d,i) => x3(i)) 
+          .attr("y", (d) => y3(d[yKey3])) 
+          .attr("height", (d) => (height - margin.bottom) - y3(d[yKey3])) 
+          .attr("width", x3.bandwidth()) //^^^ add attributes to each bar
+          .style("fill", (d) => color(d[xKey3]))
+          .style("opacity", 0.5);
 
 
     //TODO: Define a brush (call it brush1)
