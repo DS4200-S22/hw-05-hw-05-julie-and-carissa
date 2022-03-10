@@ -109,15 +109,27 @@ d3.csv("data/iris.csv").then((data) => {
 
 
     //TODO: Define a brush (call it brush1)
-    let brush1 = d3.brush();
+    // let brush1 = d3.brush().extent([[0, 0], [width, height]]);
+    let brush1 = d3.brush()
+    brush1.on("start brush end", (event) => {
+      updateChart1(event);
+    })
+
+    // const select = d3.select("#vis-holder")
+    // const call = call(brush1.extent([[0, 0], [width, height]]))
+    // const on = on("brush end", (event) => {
+    //   console.log('hello2')
+    //   updateChart1(event);
+    // })
+
+    // select().call().on()
 
     //TODO: Add brush1 to svg1
-    d3.select("#vis-holder")
-      .call(brush1.extent([[0, 0], [width, height]]).on("brush end", (event) => {
-        console.log('hello');
-        updateChart1(event);
-      }))
+  //   d3.select("#vis-holder")
+  //     .call(brush1);
+    svg1.call(brush1);
   }
+  
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
   {
@@ -184,7 +196,8 @@ d3.csv("data/iris.csv").then((data) => {
 
     //TODO: Add brush1 to svg1
     d3.select("#vis-holder")
-      .call(brush2.extent([[0, 0], [width, height]]).on("start brush", updateChart1))
+      .call(brush2.extent([[0, 0], [width, height]]))
+      .on("on brush", updateChart2)
   }
 
   //TODO: Barchart with counts of different species
