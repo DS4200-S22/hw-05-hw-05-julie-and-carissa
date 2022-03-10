@@ -7,3 +7,9 @@ body {
   stroke: black;
   stroke-width: 3;
 }
+
+.selected-bars {
+  stroke: black;
+  stroke-width: 3;
+  
+}

@@ -243,7 +243,7 @@ d3.csv("data/iris.csv").then((data) => {
       .range([height - margin.bottom, margin.top]);
 
     // Add y axis 
-    svg3.append("g")
+    bars = svg3.append("g")
       .attr("transform", `translate(${margin.left}, 0)`)
       .call(d3.axisLeft(y3))
       .attr("font-size", '20px')
@@ -255,7 +255,7 @@ d3.csv("data/iris.csv").then((data) => {
         .text(yKey3)
       );
 
-    svg3.selectAll(".bar")
+    bars = svg3.selectAll(".bar")
       .data(barData)
       .enter()  // give data to the bars
       .append("rect")
@@ -292,7 +292,7 @@ d3.csv("data/iris.csv").then((data) => {
 
 
     //TODO: Find coordinates of brushed region 
-    const extent = brushEvent.selection;
+    extent = brushEvent.selection;
 
     // myCircles1.forEach((myCircle) => {
     //   //TODO: Give bold outline to all points within the brush region in Scatterplot1
@@ -313,7 +313,7 @@ d3.csv("data/iris.csv").then((data) => {
   // Call when Scatterplot2 is brushed 
   function updateChart2(brushEvent) {
 
-    const extent = brushEvent.selection;
+    extent = brushEvent.selection;
 
     // myCircles1.forEach((myCircle) => {
     //   //TODO: Give bold outline to all points within the brush region in Scatterplot1
@@ -322,9 +322,19 @@ d3.csv("data/iris.csv").then((data) => {
     //   myCircle.classed("selected", (d) => { return isBrushed(extent, myCircle.attr("cx"), myCircle.attr("cy")) })
     // })
 
-    myCircles1.classed("selected", function (d) { return isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length)) })
 
-    bars.classed("selected", function (d) { return isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length)) })
+    const species = [];
+
+    myCircles1.classed("selected", function (d) {
+      if (isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length))) {
+        if (!species.includes(d.Species)) {
+          species.push(d.Species);
+        }
+        return true;
+      }
+    });
+
+    bars.classed("selected", function (d) { return species.includes(d.species) });
 
 
     //TODO: Find coordinates of brushed region 
@@ -338,6 +348,11 @@ d3.csv("data/iris.csv").then((data) => {
     //TODO: Give bold outline to all bars in bar chart with corresponding to species selected by Scatterplot2 brush
 
   }
+
+  // function updateBarChart(brushEvent) {
+  //   extent = brushEvent.selection;
+  //   bars.classed("selected", function (d) { console.log(d); return isBrushed(extent, x1(d.Sepal_Length), y1(d.Petal_Length)) })
+  // }
 
   //Finds dots within the brushed region
   function isBrushed(brush_coords, cx, cy) {
